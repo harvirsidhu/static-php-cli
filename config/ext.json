@@ -643,6 +643,21 @@
     "pdo": {
         "type": "builtin"
     },
+    "pdo_firebird": {
+        "support": {
+            "Linux": "wip",
+            "Darwin": "wip",
+            "BSD": "wip"
+        },
+        "type": "builtin",
+        "arg-type-windows": "custom",
+        "ext-depends": [
+            "pdo"
+        ],
+        "lib-depends-windows": [
+            "firebird-win"
+        ]
+    },
     "pdo_mysql": {
         "type": "builtin",
         "arg-type": "with",

@@ -359,6 +359,20 @@
             "path": "LICENSE"
         }
     },
+    "firebird-win": {
+        "type": "url",
+        "url": "https://github.com/FirebirdSQL/firebird/releases/download/v3.0.12/Firebird-3.0.12.33787-0-x64.zip",
+        "license": [
+            {
+                "type": "file",
+                "path": "IPLicense.txt"
+            },
+            {
+                "type": "file",
+                "path": "IDPLicense.txt"
+            }
+        ]
+    },
     "freetype": {
         "type": "ghtagtar",
         "repo": "freetype/freetype",

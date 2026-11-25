@@ -126,6 +126,12 @@
             "fastlz/fastlz.h"
         ]
     },
+    "firebird-win": {
+        "source": "firebird-win",
+        "static-libs-windows": [
+            "fbclient_ms.lib"
+        ]
+    },
     "freetype": {
         "source": "freetype",
         "static-libs-unix": [
