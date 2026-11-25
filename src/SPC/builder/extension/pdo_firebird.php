@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace SPC\builder\extension;
 
 use SPC\builder\Extension;
+use SPC\exception\ValidationException;
 use SPC\store\FileSystem;
 use SPC\util\CustomExt;
 
@@ -41,6 +42,27 @@ class pdo_firebird extends Extension
         );
 
         return true;
+    }
+
+    /**
+     * The stock check runs `php --ri pdo_firebird`, and the info page asks the
+     * client library for its version, which loads fbclient.dll. The build
+     * machine has none, so the delay-load fails and php.exe dies. Asking PDO
+     * which drivers it has proves the driver is compiled in without touching
+     * the client library.
+     */
+    public function runCliCheckWindows(): void
+    {
+        [$ret] = cmd()->execWithResult(
+            BUILD_BIN_PATH . '/php.exe -n -r "exit(in_array(\'firebird\', PDO::getAvailableDrivers(), true) ? 0 : 1);"',
+            false
+        );
+        if ($ret !== 0) {
+            throw new ValidationException(
+                "extension {$this->getName()} failed compile check: PDO does not list the firebird driver (php-cli returned {$ret})",
+                validation_module: "Extension {$this->getName()} sanity check"
+            );
+        }
     }
 
     public function getWindowsConfigureArg(bool $shared = false): string
