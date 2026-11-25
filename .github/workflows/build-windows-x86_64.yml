@@ -97,6 +97,19 @@ jobs:
       # Run build command
       - run: ./bin/spc build "${{ inputs.extensions }}" ${{ env.SPC_WITH_LIBS }} ${{ env.SPC_BUILD_DEBUG }} ${{ env.SPC_BUILD_CLI }} ${{ env.SPC_BUILD_MICRO }} ${{ env.SPC_BUILD_FPM }}
 
+      # The build step only says "see log/spc.shell.log"; print what matters
+      # from it so a failed run explains itself in the job log.
+      - name: Show the build log on failure
+        if: failure()
+        run: |
+          Get-ChildItem log -ErrorAction SilentlyContinue | Format-Table Name, Length
+          foreach ($f in Get-ChildItem log -Filter *.log -ErrorAction SilentlyContinue) {
+            Write-Host "===== errors in $($f.Name) ====="
+            Select-String -Path $f.FullName -Pattern ' error |error [A-Z]+[0-9]+|fatal error|unresolved external|NMAKE : fatal' | Select-Object -Last 60 | ForEach-Object { $_.Line }
+            Write-Host "===== tail of $($f.Name) ====="
+            Get-Content $f.FullName -Tail 120
+          }
+
       # Upload cli executable
       - if: ${{ inputs.build-cli == true }}
         uses: actions/upload-artifact@v4
